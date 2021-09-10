@@ -31,7 +31,7 @@ const (
 	LogFolder  = "logs/"
 	LogExt     = "log"
 	DateString = "{date}"   // 當下日期的替換文字
-	dateFormat = "20060102" // 當下日期格式
+	DateFormat = "20060102" // 當下日期格式
 )
 
 var (
@@ -130,7 +130,7 @@ func (o *Logger) Refresh() {
 	rwLock.Lock()
 	defer rwLock.Unlock()
 
-	nowDate := time.Now().Format(dateFormat)
+	nowDate := time.Now().Format(DateFormat)
 	if o.date != nowDate {
 		// 關閉舊log檔案
 		o.F.Close()
