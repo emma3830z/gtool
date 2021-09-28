@@ -37,18 +37,18 @@ const (
 var (
 	rwLock         sync.RWMutex // 避免自訂 log 有名稱重複導致重複開檔，所以所有 log 共用一個鎖
 	logFlag        = log.Ldate | log.Lmicroseconds
-	CallerDepth    = 2
 	ReportingLevel = DEBUG // 寫入何種層級以上的log
 	DebugMode      = false // true:直接將log打印至終端機，不寫入檔案
 )
 
 // Logger log設定
 type Logger struct {
-	folder   string // log 資料夾路徑
-	filename string // log名稱
-	date     string // 目前 log 日期
-	F        *os.File
-	logger   *log.Logger
+	folder      string // log 資料夾路徑
+	filename    string // log名稱
+	date        string // 目前 log 日期
+	callerDepth int    // log 紀錄的檔案源
+	F           *os.File
+	logger      *log.Logger
 }
 
 // GetLogger 取得logger使用
@@ -148,7 +148,7 @@ func (o *Logger) Refresh() {
 func (o *Logger) setPrefix(level Level) {
 	logPrefix := "[" + levelFlags[level] + "]"
 
-	_, file, line, ok := runtime.Caller(CallerDepth)
+	_, file, line, ok := runtime.Caller(o.callerDepth)
 	if ok {
 		t, _ := filepath.Abs(file)
 		logPrefix += fmt.Sprintf("[%s:%d]", t, line)
@@ -172,8 +172,8 @@ func GetLogFilePath(nowDate, subFolder, filename string) (string, string) {
 }
 
 // New 建立新的 Logger
-func New(folder, filename string) *Logger {
-	logger := Logger{folder: folder, filename: filename}
+func New(folder, filename string, callerDepth int) *Logger {
+	logger := Logger{folder: folder, filename: filename, callerDepth: callerDepth}
 	// 載入檔案
 	logger.Refresh()
 
