@@ -1,8 +1,12 @@
 package gtool
 
 import (
+	"log"
 	"math"
+	"strconv"
 	"strings"
+
+	GOset "github.com/deckarep/golang-set"
 )
 
 // IntInSlice 判斷數值是否在 slice 中
@@ -97,4 +101,111 @@ func SplitStringSlice(list []string, cutNumber int) (listSplit [][]string) {
 		listSplit = append(listSplit, newSlice)
 	}
 	return
+}
+
+// ToInterfaceSlice 將資料轉為轉換成 []interface{}
+// 支援型態: []int, []string, []float64
+func ToInterfaceSlice(source interface{}) (r []interface{}) {
+	switch source.(type) {
+	case []int:
+		data := source.([]int)
+		r = make([]interface{}, len(data))
+		for i := range r {
+			r[i] = interface{}(data[i])
+		}
+		return
+	case []string:
+		data := source.([]string)
+		r = make([]interface{}, len(data))
+		for i := range r {
+			r[i] = interface{}(data[i])
+		}
+		return
+	case []float64:
+		data := source.([]float64)
+		r = make([]interface{}, len(data))
+		for i := range r {
+			r[i] = interface{}(data[i])
+		}
+		return
+	}
+
+	return
+}
+
+// ToInterfaceSlice 將資料轉為轉換成 []int
+// 支援型態: []string, []interface{}
+func ToIntSlice(source interface{}) (r []int) {
+	switch source.(type) {
+	case []string:
+		var err error
+
+		data := source.([]string)
+		r = make([]int, len(data))
+		for i := range r {
+			r[i], err = strconv.Atoi(data[i])
+			if err != nil {
+				log.Println("ToIntSlice 字串轉數字失敗, source:", source)
+				continue
+			}
+		}
+		return
+	case []interface{}:
+		data := source.([]interface{})
+		r = make([]int, len(data))
+		for i, v := range data {
+			switch v.(type) {
+			case int:
+				r[i] = v.(int)
+			}
+		}
+		return
+	}
+
+	return
+}
+
+// ToStringSlice 將資料轉為轉換成 []string
+// 支援型態: []int, []interface{}
+func ToStringSlice(source interface{}) (r []string) {
+	switch source.(type) {
+	case []int:
+		data := source.([]int)
+		r = make([]string, len(data))
+		for i := range r {
+			r[i] = strconv.Itoa(data[i])
+		}
+		return
+	case []interface{}:
+		data := source.([]interface{})
+		r = make([]string, len(data))
+		for i, v := range data {
+			switch v.(type) {
+			case string:
+				r[i] = v.(string)
+			}
+		}
+	}
+
+	return
+}
+
+// DifferSet 兩個[]int 取差集
+// 回傳資料為亂序 且 會自動過濾重複資料
+func DifferSet(source []int, target []int) []int {
+	sourceSet := GOset.NewSetFromSlice(ToInterfaceSlice(source))
+	targetSet := GOset.NewSetFromSlice(ToInterfaceSlice(target))
+	operatedSet := sourceSet.Difference(targetSet)
+	result := operatedSet.ToSlice()
+	return ToIntSlice(result)
+}
+
+// IntersectSet 兩個[]int 取交集
+// 回傳資料為亂序 且 會自動過濾重複資料
+func IntersectSet(source []int, target []int) []int {
+	sourceSet := GOset.NewSetFromSlice(ToInterfaceSlice(source))
+	targetSet := GOset.NewSetFromSlice(ToInterfaceSlice(target))
+	operatedSet := sourceSet.Intersect(targetSet)
+	result := operatedSet.ToSlice()
+	return ToIntSlice(result)
 }

@@ -1,6 +1,7 @@
 package gtool
 
 import (
+	"log"
 	"time"
 
 	jsoniter "github.com/json-iterator/go"
@@ -50,4 +51,28 @@ func (t JSONTime) String() string {
 // Time 取 time.Time
 func (t JSONTime) Time() time.Time {
 	return time.Time(t)
+}
+
+// JsonToIntList json decode []int
+func JsonToIntList(jsonStr string) ([]int, bool) {
+	var list []int
+	err := JSON.UnmarshalFromString(jsonStr, &list)
+	if err != nil {
+		log.Println("JsonToIntList unmarshalErr:", err.Error())
+		return []int{}, false
+	}
+
+	return list, true
+}
+
+// JsonToStringList json decode []string
+func JsonToStringList(jsonStr string) ([]string, bool) {
+	var list []string
+	err := JSON.UnmarshalFromString(jsonStr, &list)
+	if err != nil {
+		log.Println("JsonToStringList unmarshalErr:", err.Error())
+		return []string{}, false
+	}
+
+	return list, true
 }

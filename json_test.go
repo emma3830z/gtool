@@ -83,3 +83,75 @@ func TestJSONTime_MarshalJSON(t *testing.T) {
 		})
 	}
 }
+
+func TestJsonToIntList(t *testing.T) {
+	type args struct {
+		jsonStr string
+	}
+	tests := []struct {
+		name  string
+		args  args
+		want  []int
+		want1 bool
+	}{
+		{
+			"json decode []int",
+			args{`[1,2,3]`},
+			[]int{1, 2, 3},
+			true,
+		},
+		{
+			"json decode []int fail",
+			args{`[1,"b",3]`},
+			[]int{},
+			false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, got1 := JsonToIntList(tt.args.jsonStr)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("JsonToIntList() got = %v, want %v", got, tt.want)
+			}
+			if got1 != tt.want1 {
+				t.Errorf("JsonToIntList() got1 = %v, want %v", got1, tt.want1)
+			}
+		})
+	}
+}
+
+func TestJsonToStringList(t *testing.T) {
+	type args struct {
+		jsonStr string
+	}
+	tests := []struct {
+		name  string
+		args  args
+		want  []string
+		want1 bool
+	}{
+		{
+			"json decode []string",
+			args{`["a","b","c"]`},
+			[]string{"a", "b", "c"},
+			true,
+		},
+		{
+			"json decode []string fail",
+			args{`{"1":"abc"}`},
+			[]string{},
+			false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, got1 := JsonToStringList(tt.args.jsonStr)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("JsonToStringList() got = %v, want %v", got, tt.want)
+			}
+			if got1 != tt.want1 {
+				t.Errorf("JsonToStringList() got1 = %v, want %v", got1, tt.want1)
+			}
+		})
+	}
+}

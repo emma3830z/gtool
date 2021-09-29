@@ -210,3 +210,95 @@ func TestSplitStringSlice(t *testing.T) {
 		})
 	}
 }
+
+func TestToInterfaceSlice(t *testing.T) {
+	type args struct {
+		source interface{}
+	}
+	tests := []struct {
+		name  string
+		args  args
+		wantR []interface{}
+	}{
+		{
+			"[]int to []interface{}",
+			args{[]int{1, 2, 3}},
+			[]interface{}{1, 2, 3},
+		},
+		{
+			"[]string to []interface{}",
+			args{[]string{"a", "b", "c"}},
+			[]interface{}{"a", "b", "c"},
+		},
+		{
+			"[]float64 to []interface{}",
+			args{[]float64{0.1, 0.2, 0.3}},
+			[]interface{}{0.1, 0.2, 0.3},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if gotR := ToInterfaceSlice(tt.args.source); !reflect.DeepEqual(gotR, tt.wantR) {
+				t.Errorf("ToInterfaceSlice() = %v, want %v", gotR, tt.wantR)
+			}
+		})
+	}
+}
+
+func TestToIntSlice(t *testing.T) {
+	type args struct {
+		source interface{}
+	}
+	tests := []struct {
+		name  string
+		args  args
+		wantR []int
+	}{
+		{
+			"[]string to []int",
+			args{[]string{"1", "2", "3"}},
+			[]int{1, 2, 3},
+		},
+		{
+			"[]interface{} to []int",
+			args{[]interface{}{1, 2, 3}},
+			[]int{1, 2, 3},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if gotR := ToIntSlice(tt.args.source); !reflect.DeepEqual(gotR, tt.wantR) {
+				t.Errorf("ToIntSlice() = %v, want %v", gotR, tt.wantR)
+			}
+		})
+	}
+}
+
+func TestToStringSlice(t *testing.T) {
+	type args struct {
+		source interface{}
+	}
+	tests := []struct {
+		name  string
+		args  args
+		wantR []string
+	}{
+		{
+			"[]int to []string",
+			args{[]int{1, 2, 3}},
+			[]string{"1", "2", "3"},
+		},
+		{
+			"[]interface{} to []string",
+			args{[]interface{}{"a", "b", "c"}},
+			[]string{"a", "b", "c"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if gotR := ToStringSlice(tt.args.source); !reflect.DeepEqual(gotR, tt.wantR) {
+				t.Errorf("ToStringSlice() = %v, want %v", gotR, tt.wantR)
+			}
+		})
+	}
+}
