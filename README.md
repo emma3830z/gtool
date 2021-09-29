@@ -17,9 +17,12 @@ Features
   * 四捨五入至指定小數位數
   * 無條件捨去至指定小數位數
   * float精準計算
+  * 取指定範圍亂數
 * 時間相關工具
 * json相關工具
   * json套件
   * json時間格式工具
   * json decode []int, []string
 * 自定義log工具
+* goroutine 控制器
+* 進程控制器

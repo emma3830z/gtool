@@ -1,6 +1,10 @@
 package gtool
 
 import (
+	"crypto/rand"
+	"log"
+	"math/big"
+
 	"github.com/shopspring/decimal"
 )
 
@@ -71,4 +75,18 @@ func FloatDiv(x, y float64) float64 {
 	result := sourceX.Div(sourceY)
 	f, _ := result.Float64()
 	return f
+}
+
+// RandomNum 亂數取指定範圍內的數字
+func RandomNum(min, max int) int {
+	// 產生的亂數範圍
+	bg := big.NewInt(int64(max + 1 - min))
+
+	// 產生亂數
+	num, err := rand.Int(rand.Reader, bg)
+	if err != nil {
+		log.Println("RandomNum 亂數產生失敗, Error:", err.Error())
+	}
+
+	return int(num.Int64()) + min
 }
